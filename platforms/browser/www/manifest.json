@@ -1,11 +1,11 @@
 {
   "background_color": "#FFF",
   "display": "standalone",
-  "name": "helloworld",
-  "short_name": "helloworld",
+  "name": "Salon XXX",
+  "short_name": "Salon XXX",
   "version": "com.phonegap.helloworld",
-  "description": "Hello World sample application that responds to the deviceready event.",
-  "author": "PhoneGap Team",
+  "description": "Aplikasi Member Salon xxx",
+  "author": "SK DEV TECHNOLOGY",
   "icons": [],
   "start_url": "index.html",
   "theme_color": "#2196f3"
