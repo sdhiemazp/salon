@@ -736,7 +736,7 @@ routes: [
 						error:function(data){
 							determinateLoading = false;
 							app.dialog.close();
-							app.dialog.alert('Success !!!','Notifikasi',function(){
+							app.dialog.alert(error_connection,'Notifikasi',function(){
 								app.views.main.router.back({
 									url: /home/,
 									force: true,
