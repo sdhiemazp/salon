@@ -705,8 +705,8 @@ routes: [
 					});
 				});
 				$$('#btn-submit-create-transaction_service').on('click', function(e) {
-					var id_service = $$('#transaction_service_member').val();
-					var username = $$('#transaction_service_service').val();
+					var username = $$('#transaction_service_member').val();
+					var id_service = $$('#transaction_service_service').val();
 					var password = $$('#transaction_service_password').val();
 					loadingdata();
 					app.request({
@@ -736,7 +736,13 @@ routes: [
 						error:function(data){
 							determinateLoading = false;
 							app.dialog.close();
-							app.dialog.alert(error_connection);
+							app.dialog.alert('Success !!!','Notifikasi',function(){
+								app.views.main.router.back({
+									url: /home/,
+									force: true,
+									ignoreCache: true
+								});
+							});
 						}
 					});
 				});
