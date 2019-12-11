@@ -711,7 +711,7 @@ routes: [
 					loadingdata();
 					app.request({
 						method:"POST",
-						url:conn_database+"service/transaction_service.php",
+						url:conn_database+"transaction/transaction_coba.php",
 						data:{id_service:id_service, username:username, password:password},
 						success:function(data){
 							var obj = JSON.parse(data);
@@ -737,11 +737,11 @@ routes: [
 							determinateLoading = false;
 							app.dialog.close();
 							app.dialog.alert(error_connection,'Notifikasi',function(){
-								app.views.main.router.back({
-									url: /home/,
-									force: true,
-									ignoreCache: true
-								});
+								// app.views.main.router.back({
+								// 	url: /home/,
+								// 	force: true,
+								// 	ignoreCache: true
+								// });
 							});
 						}
 					});
