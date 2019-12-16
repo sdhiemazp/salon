@@ -222,7 +222,10 @@
   align-items: center;
   justify-content: center;
 }
-.page
-{
+.page {
   background-color: white;
+}
+.fuckyu {
+  background-color:#007aff;
+  color:white;
 }
