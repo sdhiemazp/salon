@@ -1,5 +1,5 @@
 var $$ = Dom7;
-var conn_database = "https://salon.skdevtechnology.com/";
+var conn_database = "https://salon.skdevtechnology.com/api/";
 var error_connection = "Jaringan tidak tersedia !!!";
 var app = new Framework7({
 root: '#app',
@@ -274,7 +274,7 @@ routes: [
 				loadingdata();
 				app.request({
 					method:"POST",
-					url:conn_database+"select_user.php",
+					url:conn_database+"/salon/select_service.php",
 					data:{category_user:'salon'},
 					success:function(data){
 						var obj = JSON.parse(data);
@@ -286,19 +286,19 @@ routes: [
 								$$('#list_paket_salon').append(`
 									<li class="swipeout">
 										<div class="swipeout-content">
-										<a href="/show_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
+										<a href="/show_member_salon/`+x[i]['idservice']+`" class="item-link item-content">
 											<div class="item-inner">
 											<div class="item-title-row">
-												<div class="item-title">`+x[i]['name_user']+`</div>
+												<div class="item-title">`+x[i]['name_service']+`</div>
 												<div class="item-after"></div>
 											</div>
-											<div class="item-subtitle">`+x[i]['phone_user']+`</div>
+											<div class="item-subtitle">`+x[i]['price_service']+`</div>
 											</div>
 										</a>
 										</div>
 										<div class="swipeout-actions-right">
-										<a href="/edit_member/`+x[i]['iduser']+`" class="color-green edit-member">Edit</a>
-										<a href="/show_member/`+x[i]['iduser']+`" class="color-blue show-member">Show</a>
+										<a href="/edit_member/`+x[i]['idservice']+`" class="color-green edit-member">Ubah</a>
+										<a href="#" class="color-red show-member">Hapus</a>
 										</div>
 									</li>
 								`);
@@ -319,60 +319,60 @@ routes: [
 						app.dialog.alert(error_connection);
 					}
 				});
-				$$('#txtsearch_list_member_salon').on('keyup', function()
-					{
-						var cari = $$('#txtsearch_list_member_salon').val();
-						app.request({
-							method:"POST",
-							url:conn_database+"select_user.php",
-							data:{category_user:'salon', name_user:cari},
-							success:function(data){
-								var obj = JSON.parse(data);
-								if(obj['status'] == true) {
-									var x = obj['data'];
-									$$('#list_member_salon').html('');
-									for(var i = 0; i<x.length; i++)
-									{
-										$$('#list_member_salon').append(`
-											<li class="swipeout">
-												<div class="swipeout-content">
-												<a href="#" class="item-link item-content">
-													<div class="item-inner">
-													<div class="item-title-row">
-														<div class="item-title">`+x[i]['name_user']+`</div>
-														<div class="item-after"></div>
-													</div>
-													<div class="item-subtitle">`+x[i]['phone_user']+`</div>
-													</div>
-												</a>
-												</div>
-												<div class="swipeout-actions-right">
-												<a href="/edit_member/`+x[i]['iduser']+`" class="color-green edit-member">Edit</a>
-												<a href="/show_member/`+x[i]['iduser']+`" class="color-blue show-member">Show</a>
-												</div>
-											</li>
-										`);
-									}
-
-								}
-								else 
+				$$('#txtsearch_list_paket_salon').on('keyup', function()
+				{
+					var cari = $$('#txtsearch_list_paket_salon').val();
+					app.request({
+						method:"POST",
+						url:conn_database+"/salon/select_service.php",
+						data:{name_service:cari},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								$$('#list_paket_salon').html('');
+								for(var i = 0; i<x.length; i++)
 								{
-									app.dialog.alert(obj['message']);
-									determinateLoading = false;
-									app.dialog.close();
+									$$('#list_paket_salon').append(`
+										<li class="swipeout">
+											<div class="swipeout-content">
+											<a href="#" class="item-link item-content">
+												<div class="item-inner">
+												<div class="item-title-row">
+													<div class="item-title">`+x[i]['name_service']+`</div>
+													<div class="item-after"></div>
+												</div>
+												<div class="item-subtitle">`+x[i]['price_service']+`</div>
+												</div>
+											</a>
+											</div>
+											<div class="swipeout-actions-right">
+											<a href="/edit_paket_salon/`+x[i]['idservice']+`" class="color-green edit-member">Ubah</a>
+											<a href="#" class="color-red show-member">Hapus</a>
+											</div>
+										</li>
+									`);
 								}
-							},
-							error:function(data){
+
+							}
+							else 
+							{
+								app.dialog.alert(obj['message']);
 								determinateLoading = false;
 								app.dialog.close();
-								app.dialog.alert(error_connection);
 							}
-						});
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
 					});
+				});
 			},	
 		},
 	},
-	// Create member Salon
+	// Tambah Paket Salon
 	{
 		path: '/tambah_paket_salon/',
 		url: 'pages/salon/tambah_paket.html',
@@ -380,19 +380,65 @@ routes: [
 		{
 			pageInit: function (e, page) 
 			{
-				$$('#btn-submit-register-paket-salon').on('click', function(e) {
+				$$('#btn-submit-tambah-paket-salon').on('click', function(e) {
 					var nama_tambah_paket_salon = $$('#nama_tambah_paket_salon').val();
-					var nomer_tambah_paket_salon = $$('#nomer_tambah_paket_salon').val();
-					var alamat_tambah_paket_salon = $$('#alamat_tambah_paket_salon').val();
+					var harga_tambah_paket_salon = $$('#harga_tambah_paket_salon').val();
 					loadingdata();
 					app.request({
 						method:"POST",
-						url:conn_database+"insert_user.php",
+						url:conn_database+"/salon/insert_service.php",
 						data:{
-							name_user:nama_tambah_paket_salon,
-							address_user:nomer_tambah_paket_salon,
-							phone_user:alamat_tambah_paket_salon,
-							category_user:'salon',
+							name_service:nama_tambah_paket_salon,
+							price_service:harga_tambah_paket_salon,
+						},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								app.dialog.alert(x,'Notifikasi',function(){
+									app.views.main.router.back({
+										url: /home/,
+										force: true,
+										ignoreCache: true
+									});
+								});
+								determinateLoading = false;
+								app.dialog.close();
+							}
+							else {
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+			},	
+		},
+	},
+	// Ubah Paket Salon
+	{
+		path: '/ubah_paket_salon/',
+		url: 'pages/salon/obah_paket.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				$$('#btn-submit-tambah-paket-salon').on('click', function(e) {
+					var nama_tambah_paket_salon = $$('#nama_tambah_paket_salon').val();
+					var harga_tambah_paket_salon = $$('#harga_tambah_paket_salon').val();
+					loadingdata();
+					app.request({
+						method:"POST",
+						url:conn_database+"/salon/insert_service.php",
+						data:{
+							name_service:nama_tambah_paket_salon,
+							price_service:harga_tambah_paket_salon,
 						},
 						success:function(data){
 							var obj = JSON.parse(data);
