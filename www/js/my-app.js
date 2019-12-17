@@ -31,10 +31,415 @@ routes: [
 			},	
 		},
 	},
-	// Index member
+	// Salon
 	{
-		path: '/index_member/',
-		url: 'pages/member/index_member.html',
+		path: '/index_salon/',
+		url: 'pages/salon/index_salon.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				
+			},	
+		},
+	},
+	// List Member Salon
+	{
+		path: '/list_member_salon/',
+		url: 'pages/salon/list_member.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				var $ptrContent = $$('.ptr-content');
+				$ptrContent.on('ptr:refresh', function (e) {
+					// Emulate 2s loading
+					setTimeout(function () {
+						mainView.router.refreshPage();
+						// When loading done, we need to reset it
+						app.ptr.done(); // or e.detail();
+					}, 2000);
+				});
+				$$('#list_member_salon').html('');
+				loadingdata();
+				app.request({
+					method:"POST",
+					url:conn_database+"select_user.php",
+					data:{category_user:'salon'},
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#list_member_salon').html('');
+							for(var i = 0; i<x.length; i++)
+							{
+								$$('#list_member_salon').append(`
+									<li class="swipeout">
+										<div class="swipeout-content">
+										<a href="/show_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
+											<div class="item-inner">
+											<div class="item-title-row">
+												<div class="item-title">`+x[i]['name_user']+`</div>
+												<div class="item-after"></div>
+											</div>
+											<div class="item-subtitle">`+x[i]['phone_user']+`</div>
+											</div>
+										</a>
+										</div>
+										<div class="swipeout-actions-right">
+										<a href="/edit_member/`+x[i]['iduser']+`" class="color-green edit-member">Edit</a>
+										<a href="/show_member/`+x[i]['iduser']+`" class="color-blue show-member">Show</a>
+										</div>
+									</li>
+								`);
+							}
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+				$$('#txtsearch_list_member_salon').on('keyup', function()
+					{
+						var cari = $$('#txtsearch_list_member_salon').val();
+						app.request({
+							method:"POST",
+							url:conn_database+"select_user.php",
+							data:{category_user:'salon', name_user:cari},
+							success:function(data){
+								var obj = JSON.parse(data);
+								if(obj['status'] == true) {
+									var x = obj['data'];
+									$$('#list_member_salon').html('');
+									for(var i = 0; i<x.length; i++)
+									{
+										$$('#list_member_salon').append(`
+											<li class="swipeout">
+												<div class="swipeout-content">
+												<a href="#" class="item-link item-content">
+													<div class="item-inner">
+													<div class="item-title-row">
+														<div class="item-title">`+x[i]['name_user']+`</div>
+														<div class="item-after"></div>
+													</div>
+													<div class="item-subtitle">`+x[i]['phone_user']+`</div>
+													</div>
+												</a>
+												</div>
+												<div class="swipeout-actions-right">
+												<a href="/edit_member/`+x[i]['iduser']+`" class="color-green edit-member">Edit</a>
+												<a href="/show_member/`+x[i]['iduser']+`" class="color-blue show-member">Show</a>
+												</div>
+											</li>
+										`);
+									}
+
+								}
+								else 
+								{
+									app.dialog.alert(obj['message']);
+									determinateLoading = false;
+									app.dialog.close();
+								}
+							},
+							error:function(data){
+								determinateLoading = false;
+								app.dialog.close();
+								app.dialog.alert(error_connection);
+							}
+						});
+					});
+			},	
+		},
+	},
+	// Tambah member Salon
+	{
+		path: '/tambah_member_salon/',
+		url: 'pages/salon/tambah_member.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				$$('#btn-submit-register-member-salon').on('click', function(e) {
+					var nama_tambah_member_salon = $$('#nama_tambah_member_salon').val();
+					var nomer_tambah_member_salon = $$('#nomer_tambah_member_salon').val();
+					var alamat_tambah_member_salon = $$('#alamat_tambah_member_salon').val();
+					loadingdata();
+					app.request({
+						method:"POST",
+						url:conn_database+"insert_user.php",
+						data:{
+							name_user:nama_tambah_member_salon,
+							address_user:alamat_tambah_member_salon,
+							phone_user:nomer_tambah_member_salon,
+							category_user:'salon',
+						},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								app.dialog.alert(x,'Notifikasi',function(){
+									app.views.main.router.back({
+										url: /home/,
+										force: true,
+										ignoreCache: true
+									});
+								});
+								determinateLoading = false;
+								app.dialog.close();
+							}
+							else {
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+			},	
+		},
+	},
+	// Show member Salon
+	{
+		path: '/show_member_salon/:id',
+		url: 'pages/salon/show_member.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				var x = page.router.currentRoute.params.id;
+				loadingdata();
+				app.request({
+					method:"POST",
+					url:conn_database+"select_user.php",
+					data:{category_user:'salon',iduser:x},
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#name_user_member_salon').append(x[0]['name_user']);
+							$$('#phone_user_member_salon').append(x[0]['phone_user']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+			},	
+		},
+	},
+	// List Paket Salon
+	{
+		path: '/list_paket_salon/',
+		url: 'pages/salon/list_paket.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				var $ptrContent = $$('.ptr-content');
+				$ptrContent.on('ptr:refresh', function (e) {
+					// Emulate 2s loading
+					setTimeout(function () {
+						mainView.router.refreshPage();
+						// When loading done, we need to reset it
+						app.ptr.done(); // or e.detail();
+					}, 2000);
+				});
+				$$('#list_paket_salon').html('');
+				loadingdata();
+				app.request({
+					method:"POST",
+					url:conn_database+"select_user.php",
+					data:{category_user:'salon'},
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#list_paket_salon').html('');
+							for(var i = 0; i<x.length; i++)
+							{
+								$$('#list_paket_salon').append(`
+									<li class="swipeout">
+										<div class="swipeout-content">
+										<a href="/show_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
+											<div class="item-inner">
+											<div class="item-title-row">
+												<div class="item-title">`+x[i]['name_user']+`</div>
+												<div class="item-after"></div>
+											</div>
+											<div class="item-subtitle">`+x[i]['phone_user']+`</div>
+											</div>
+										</a>
+										</div>
+										<div class="swipeout-actions-right">
+										<a href="/edit_member/`+x[i]['iduser']+`" class="color-green edit-member">Edit</a>
+										<a href="/show_member/`+x[i]['iduser']+`" class="color-blue show-member">Show</a>
+										</div>
+									</li>
+								`);
+							}
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+				$$('#txtsearch_list_member_salon').on('keyup', function()
+					{
+						var cari = $$('#txtsearch_list_member_salon').val();
+						app.request({
+							method:"POST",
+							url:conn_database+"select_user.php",
+							data:{category_user:'salon', name_user:cari},
+							success:function(data){
+								var obj = JSON.parse(data);
+								if(obj['status'] == true) {
+									var x = obj['data'];
+									$$('#list_member_salon').html('');
+									for(var i = 0; i<x.length; i++)
+									{
+										$$('#list_member_salon').append(`
+											<li class="swipeout">
+												<div class="swipeout-content">
+												<a href="#" class="item-link item-content">
+													<div class="item-inner">
+													<div class="item-title-row">
+														<div class="item-title">`+x[i]['name_user']+`</div>
+														<div class="item-after"></div>
+													</div>
+													<div class="item-subtitle">`+x[i]['phone_user']+`</div>
+													</div>
+												</a>
+												</div>
+												<div class="swipeout-actions-right">
+												<a href="/edit_member/`+x[i]['iduser']+`" class="color-green edit-member">Edit</a>
+												<a href="/show_member/`+x[i]['iduser']+`" class="color-blue show-member">Show</a>
+												</div>
+											</li>
+										`);
+									}
+
+								}
+								else 
+								{
+									app.dialog.alert(obj['message']);
+									determinateLoading = false;
+									app.dialog.close();
+								}
+							},
+							error:function(data){
+								determinateLoading = false;
+								app.dialog.close();
+								app.dialog.alert(error_connection);
+							}
+						});
+					});
+			},	
+		},
+	},
+	// Create member Salon
+	{
+		path: '/tambah_paket_salon/',
+		url: 'pages/salon/tambah_paket.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				$$('#btn-submit-register-paket-salon').on('click', function(e) {
+					var nama_tambah_paket_salon = $$('#nama_tambah_paket_salon').val();
+					var nomer_tambah_paket_salon = $$('#nomer_tambah_paket_salon').val();
+					var alamat_tambah_paket_salon = $$('#alamat_tambah_paket_salon').val();
+					loadingdata();
+					app.request({
+						method:"POST",
+						url:conn_database+"insert_user.php",
+						data:{
+							name_user:nama_tambah_paket_salon,
+							address_user:nomer_tambah_paket_salon,
+							phone_user:alamat_tambah_paket_salon,
+							category_user:'salon',
+						},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								app.dialog.alert(x,'Notifikasi',function(){
+									app.views.main.router.back({
+										url: /home/,
+										force: true,
+										ignoreCache: true
+									});
+								});
+								determinateLoading = false;
+								app.dialog.close();
+							}
+							else {
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+			},	
+		},
+	},
+	// Sothys
+	{
+		path: '/index_sothys/',
+		url: 'pages/sothys/index_sothys.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				
+			},	
+		},
+	},
+	// List Member Sothys
+	{
+		path: '/list_member/',
+		url: 'pages/sothys/list_member.html',
 		on: 
 		{
 			pageInit: function (e, page) 
@@ -93,53 +498,6 @@ routes: [
 						app.dialog.close();
 						app.dialog.alert(error_connection);
 					}
-				});
-			},	
-		},
-	},
-	// Create member
-	{
-		path: '/create_member/',
-		url: 'pages/member/create_member.html',
-		on: 
-		{
-			pageInit: function (e, page) 
-			{
-				$$('#btn-submit-register-member').on('click', function(e) {
-					var username = $$('#username_register_member').val();
-					var name = $$('#name_register_member').val();
-					var password = $$('#password_register_member').val();
-					loadingdata();
-					app.request({
-						method:"POST",
-						url:conn_database+"member/create_member.php",
-						data:{username:username, name:name, password:password},
-						success:function(data){
-							var obj = JSON.parse(data);
-							if(obj['status'] == true) {
-								var x = obj['data'];
-								app.dialog.alert(x,'Notifikasi',function(){
-									app.views.main.router.back({
-										url: /home/,
-										force: true,
-										ignoreCache: true
-									});
-								});
-								determinateLoading = false;
-								app.dialog.close();
-							}
-							else {
-								app.dialog.alert(obj['message']);
-								determinateLoading = false;
-								app.dialog.close();
-							}
-						},
-						error:function(data){
-							determinateLoading = false;
-							app.dialog.close();
-							app.dialog.alert(error_connection);
-						}
-					});
 				});
 			},	
 		},
