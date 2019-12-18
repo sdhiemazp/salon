@@ -10,6 +10,9 @@
     font-size: 350%; 
     padding: 10%;
 }
+.tombol-submit {
+  width: 80%; 
+}
 .page {
   background-color: white;
 }
