@@ -76,7 +76,7 @@ routes: [
 								$$('#list_member_salon').append(`
 									<li class="swipeout">
 										<div class="swipeout-content">
-										<a href="/lihat_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
+										<a href="/detail_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
 											<div class="item-inner">
 											<div class="item-title-row">
 												<div class="item-title">`+x[i]['name_user']+`</div>
@@ -141,86 +141,85 @@ routes: [
 						app.dialog.alert(error_connection);
 					}
 				});
-				$$('#txtsearch_list_member_salon').on('keyup', function()
-					{
-						var cari = $$('#txtsearch_list_member_salon').val();
-						app.request({
-							method:"POST",
-							url:conn_database+"select_user.php",
-							data:{category_user:'salon', name_user:cari},
-							success:function(data){
-								var obj = JSON.parse(data);
-								if(obj['status'] == true) {
-									var x = obj['data'];
-									$$('#list_member_salon').html('');
-									for(var i = 0; i<x.length; i++)
-									{
-										$$('#list_member_salon').append(`
-											<li class="swipeout">
-												<div class="swipeout-content">
-												<a href="/lihat_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
-													<div class="item-inner">
-													<div class="item-title-row">
-														<div class="item-title">`+x[i]['name_user']+`</div>
-														<div class="item-after"></div>
-													</div>
-													<div class="item-subtitle">`+x[i]['phone_user']+`</div>
-													</div>
-												</a>
+				$$('#txtsearch_list_member_salon').on('keyup', function() {
+					var cari = $$('#txtsearch_list_member_salon').val();
+					app.request({
+						method:"POST",
+						url:conn_database+"select_user.php",
+						data:{category_user:'salon', name_user:cari},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								$$('#list_member_salon').html('');
+								for(var i = 0; i<x.length; i++)
+								{
+									$$('#list_member_salon').append(`
+										<li class="swipeout">
+											<div class="swipeout-content">
+											<a href="/detail_member_salon/`+x[i]['iduser']+`" class="item-link item-content">
+												<div class="item-inner">
+												<div class="item-title-row">
+													<div class="item-title">`+x[i]['name_user']+`</div>
+													<div class="item-after"></div>
 												</div>
-												<div class="swipeout-actions-right">
-													<a href="/ubah_member_salon/`+x[i]['iduser']+`" class="color-green edit-member">Ubah</a>
-													<a href="#" data-id="` + x[i]['iduser'] + `" class="color-red show-member hapus-member-salon">Hapus</a>
+												<div class="item-subtitle">`+x[i]['phone_user']+`</div>
 												</div>
-											</li>
-										`);
-									}
-									$$('.hapus-member-salon').on('click', function () {
-										var id = $$(this).data('id');
-										app.dialog.confirm("Apakah Anda yakin untuk menghapus member ini?",function(){
-											loadingdata();
-											app.request({
-												method:"POST",
-												url:conn_database+"delete_user.php",
-												data:{iduser:id},
-												success:function(data){
-													var obj = JSON.parse(data);
-													if(obj['status'] == true) {
-														var x = obj['data'];
-														app.dialog.alert(x,'Notifikasi',function(){
-															mainView.router.refreshPage();
-														});
-														determinateLoading = false;
-														app.dialog.close();
-													}
-													else {
-														determinateLoading = false;
-														app.dialog.close();
-														app.dialog.alert(obj['message']);
-													}
-												},
-												error:function(data){
+											</a>
+											</div>
+											<div class="swipeout-actions-right">
+												<a href="/ubah_member_salon/`+x[i]['iduser']+`" class="color-green edit-member">Ubah</a>
+												<a href="#" data-id="` + x[i]['iduser'] + `" class="color-red show-member hapus-member-salon">Hapus</a>
+											</div>
+										</li>
+									`);
+								}
+								$$('.hapus-member-salon').on('click', function () {
+									var id = $$(this).data('id');
+									app.dialog.confirm("Apakah Anda yakin untuk menghapus member ini?",function(){
+										loadingdata();
+										app.request({
+											method:"POST",
+											url:conn_database+"delete_user.php",
+											data:{iduser:id},
+											success:function(data){
+												var obj = JSON.parse(data);
+												if(obj['status'] == true) {
+													var x = obj['data'];
+													app.dialog.alert(x,'Notifikasi',function(){
+														mainView.router.refreshPage();
+													});
 													determinateLoading = false;
 													app.dialog.close();
-													app.dialog.alert(error_connection);
 												}
-											  });
-										});
+												else {
+													determinateLoading = false;
+													app.dialog.close();
+													app.dialog.alert(obj['message']);
+												}
+											},
+											error:function(data){
+												determinateLoading = false;
+												app.dialog.close();
+												app.dialog.alert(error_connection);
+											}
+											});
 									});
-								}
-								else 
-								{
-									app.dialog.alert(obj['message']);
-									determinateLoading = false;
-									app.dialog.close();
-								}
-							},
-							error:function(data){
+								});
+							}
+							else 
+							{
+								app.dialog.alert(obj['message']);
 								determinateLoading = false;
 								app.dialog.close();
-								app.dialog.alert(error_connection);
 							}
-						});
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
 				});
 			},	
 		},
@@ -360,8 +359,8 @@ routes: [
 	},
 	// Show member Salon
 	{
-		path: '/lihat_member_salon/:id',
-		url: 'pages/salon/lihat_member.html',
+		path: '/detail_member_salon/:id',
+		url: 'pages/salon/detail_member.html',
 		on: 
 		{
 			pageInit: function (e, page) 
@@ -577,7 +576,6 @@ routes: [
 													<div class="item-title">`+x[i]['name_service']+`</div>
 													<div class="item-after"></div>
 												</div>
-												<div class="item-subtitle">`+x[i]['price_service']+`</div>
 												</div>
 											</a>
 											</div>
@@ -971,7 +969,7 @@ routes: [
 				app.request({
 					method:"POST",
 					url:conn_database+"salon/user_service/select_user_service.php",
-					data:{iduser:y},
+					data:{iduser:y, ket:'transaksi_salon'},
 					success:function(data){
 						var obj = JSON.parse(data);
 						if(obj['status'] == true) {
@@ -1051,6 +1049,7 @@ routes: [
 				$$('#printcoy').on('click', function(e) {
 					app.dialog.alert('oiiii');
 					cordova.plugins.printer.print('<b>Hello Cordova!</b>');
+					
 				});
 			},	
 		},
@@ -1088,7 +1087,7 @@ routes: [
 								$$('#list_member_sothys').append(`
 									<li class="swipeout">
 										<div class="swipeout-content">
-										<a href="/lihat_member_sothys/`+x[i]['iduser']+`" class="item-link item-content">
+										<a href="/detail_member_sothys/`+x[i]['iduser']+`" class="item-link item-content">
 											<div class="item-inner">
 											<div class="item-title-row">
 												<div class="item-title">`+x[i]['name_user']+`</div>
@@ -1099,6 +1098,7 @@ routes: [
 										</a>
 										</div>
 										<div class="swipeout-actions-right">
+											<a href="/transaksi_member_produk_sothys/`+x[i]['iduser']+`" class="color-blue edit-member">Transaksi</a>
 											<a href="/ubah_member_sothys/`+x[i]['iduser']+`" class="color-green edit-member">Ubah</a>
 											<a href="#" data-id="` + x[i]['iduser'] + `" class="color-red show-member hapus-member-sothys">Hapus</a>
 										</div>
@@ -1153,86 +1153,86 @@ routes: [
 						app.dialog.alert(error_connection);
 					}
 				});
-				$$('#txtsearch_list_member_sothys').on('keyup', function()
-					{
-						var cari = $$('#txtsearch_list_member_sothys').val();
-						app.request({
-							method:"POST",
-							url:conn_database+"select_user.php",
-							data:{category_user:'sothys', name_user:cari},
-							success:function(data){
-								var obj = JSON.parse(data);
-								if(obj['status'] == true) {
-									var x = obj['data'];
-									$$('#list_member_sothys').html('');
-									for(var i = 0; i<x.length; i++)
-									{
-										$$('#list_member_sothys').append(`
-											<li class="swipeout">
-												<div class="swipeout-content">
-												<a href="/lihat_member_sothys/`+x[i]['iduser']+`" class="item-link item-content">
-													<div class="item-inner">
-													<div class="item-title-row">
-														<div class="item-title">`+x[i]['name_user']+`</div>
-														<div class="item-after"></div>
-													</div>
-													<div class="item-subtitle">`+x[i]['phone_user']+`</div>
-													</div>
-												</a>
+				$$('#txtsearch_list_member_sothys').on('keyup', function() {
+					var cari = $$('#txtsearch_list_member_sothys').val();
+					app.request({
+						method:"POST",
+						url:conn_database+"select_user.php",
+						data:{category_user:'sothys', name_user:cari},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								$$('#list_member_sothys').html('');
+								for(var i = 0; i<x.length; i++)
+								{
+									$$('#list_member_sothys').append(`
+										<li class="swipeout">
+											<div class="swipeout-content">
+											<a href="/detail_member_sothys/`+x[i]['iduser']+`" class="item-link item-content">
+												<div class="item-inner">
+												<div class="item-title-row">
+													<div class="item-title">`+x[i]['name_user']+`</div>
+													<div class="item-after"></div>
 												</div>
-												<div class="swipeout-actions-right">
-													<a href="/ubah_member_sothys/`+x[i]['iduser']+`" class="color-green edit-member">Ubah</a>
-													<a href="#" data-id="` + x[i]['iduser'] + `" class="color-red show-member hapus-member-sothys">Hapus</a>
+												<div class="item-subtitle">`+x[i]['phone_user']+`</div>
 												</div>
-											</li>
-										`);
-									}
-									$$('.hapus-member-sothys').on('click', function () {
-										var id = $$(this).data('id');
-										app.dialog.confirm("Apakah Anda yakin untuk menghapus member ini?",function(){
-											loadingdata();
-											app.request({
-												method:"POST",
-												url:conn_database+"delete_user.php",
-												data:{iduser:id},
-												success:function(data){
-													var obj = JSON.parse(data);
-													if(obj['status'] == true) {
-														var x = obj['data'];
-														app.dialog.alert(x,'Notifikasi',function(){
-															mainView.router.refreshPage();
-														});
-														determinateLoading = false;
-														app.dialog.close();
-													}
-													else {
-														determinateLoading = false;
-														app.dialog.close();
-														app.dialog.alert(obj['message']);
-													}
-												},
-												error:function(data){
+											</a>
+											</div>
+											<div class="swipeout-actions-right">
+												<a href="/transaksi_member_produk_sothys/`+x[i]['iduser']+`" class="color-blue edit-member">Transaksi</a>
+												<a href="/ubah_member_sothys/`+x[i]['iduser']+`" class="color-green edit-member">Ubah</a>
+												<a href="#" data-id="` + x[i]['iduser'] + `" class="color-red show-member hapus-member-sothys">Hapus</a>
+											</div>
+										</li>
+									`);
+								}
+								$$('.hapus-member-sothys').on('click', function () {
+									var id = $$(this).data('id');
+									app.dialog.confirm("Apakah Anda yakin untuk menghapus member ini?",function(){
+										loadingdata();
+										app.request({
+											method:"POST",
+											url:conn_database+"delete_user.php",
+											data:{iduser:id},
+											success:function(data){
+												var obj = JSON.parse(data);
+												if(obj['status'] == true) {
+													var x = obj['data'];
+													app.dialog.alert(x,'Notifikasi',function(){
+														mainView.router.refreshPage();
+													});
 													determinateLoading = false;
 													app.dialog.close();
-													app.dialog.alert(error_connection);
 												}
-											  });
-										});
+												else {
+													determinateLoading = false;
+													app.dialog.close();
+													app.dialog.alert(obj['message']);
+												}
+											},
+											error:function(data){
+												determinateLoading = false;
+												app.dialog.close();
+												app.dialog.alert(error_connection);
+											}
+											});
 									});
-								}
-								else 
-								{
-									app.dialog.alert(obj['message']);
-									determinateLoading = false;
-									app.dialog.close();
-								}
-							},
-							error:function(data){
+								});
+							}
+							else 
+							{
+								app.dialog.alert(obj['message']);
 								determinateLoading = false;
 								app.dialog.close();
-								app.dialog.alert(error_connection);
 							}
-						});
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
 				});
 			},	
 		},
@@ -1370,10 +1370,10 @@ routes: [
 			},	
 		},
 	},
-	// Show member Salon
+	// Show member Sothys
 	{
-		path: '/lihat_member_sothys/:id',
-		url: 'pages/sothys/lihat_member.html',
+		path: '/detail_member_sothys/:id',
+		url: 'pages/sothys/detail_member.html',
 		on: 
 		{
 			pageInit: function (e, page) 
@@ -1458,6 +1458,449 @@ routes: [
 							app.dialog.close();
 							app.dialog.alert(error_connection);
 						}
+					});
+				});
+			},	
+		},
+	},
+	// List Produk Sothys
+	{
+		path: '/list_produk_sothys/',
+		url: 'pages/sothys/list_produk.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				var $ptrContent = $$('.ptr-content');
+				$ptrContent.on('ptr:refresh', function (e) {
+					// Emulate 2s loading
+					setTimeout(function () {
+						mainView.router.refreshPage();
+						// When loading done, we need to reset it
+						app.ptr.done(); // or e.detail();
+					}, 2000);
+				});
+				$$('#list_produk_sothys').html('');
+				loadingdata();
+				app.request({
+					method:"POST",
+					url:conn_database+"sothys/product/select_product.php",
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#list_produk_sothys').html('');
+							for(var i = 0; i<x.length; i++)
+							{
+								$$('#list_produk_sothys').append(`
+									<li class="swipeout">
+										<div class="swipeout-content">
+										<a href="#" class="item-link item-content">
+											<div class="item-inner">
+											<div class="item-title-row">
+												<div class="item-title">`+x[i]['name_product']+`</div>
+												<div class="item-after"></div>
+											</div>
+											<div class="item-subtitle">`+x[i]['price_product']+`</div>
+											<div class="item-subtitle"></div>
+											</div>
+										</a>
+										</div>
+										<div class="swipeout-actions-right">
+											<a href="/ubah_produk_sothys/`+x[i]['idproduct']+`" class="color-green edit-member">Ubah</a>
+											<a href="#" data-id=" `+x[i]['idproduct']+` " class="color-red hapus-produk-sothys">Hapus</a>
+										</div>
+									</li>
+								`);
+							}
+							$$('.hapus-produk-sothys').on('click', function () {
+								var id = $$(this).data('id');
+								app.dialog.confirm("Apakah Anda yakin untuk menghapus produk ini?",function(){
+									loadingdata();
+									app.request({
+										method:"POST",
+										url:conn_database+"sothys/product/delete_product.php",
+										data:{idproduct:id},
+										success:function(data){
+											var obj = JSON.parse(data);
+											if(obj['status'] == true) {
+												var x = obj['data'];
+												app.dialog.alert(x,'Notifikasi',function(){
+													mainView.router.refreshPage();
+												});
+												determinateLoading = false;
+												app.dialog.close();
+											}
+											else {
+												determinateLoading = false;
+												app.dialog.close();
+												app.dialog.alert(obj['message']);
+											}
+										},
+										error:function(data){
+											determinateLoading = false;
+											app.dialog.close();
+											app.dialog.alert(error_connection);
+										}
+									  });
+								});
+							});
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+				$$('#txtsearch_list_produk_sothys').on('keyup', function()
+				{
+					var cari = $$('#txtsearch_list_produk_sothys').val();
+					app.request({
+						method:"POST",
+						url:conn_database+"sothys/product/select_product.php",
+						data:{name_product:cari},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								$$('#list_produk_sothys').html('');
+								for(var i = 0; i<x.length; i++)
+								{
+									$$('#list_produk_sothys').append(`
+										<li class="swipeout">
+											<div class="swipeout-content">
+											<a href="#" class="item-link item-content">
+												<div class="item-inner">
+												<div class="item-title-row">
+													<div class="item-title">`+x[i]['name_product']+`</div>
+													<div class="item-after"></div>
+												</div>
+												<div class="item-subtitle">`+x[i]['price_product']+`</div>
+												</div>
+											</a>
+											</div>
+											<div class="swipeout-actions-right">
+												<a href="/ubah_produk_sothys/`+x[i]['idproduct']+`" class="color-green edit-member">Ubah</a>
+												<a href="#" data-id=" `+x[i]['idproduct']+` " class="color-red hapus-produk-sothys">Hapus</a>
+											</div>
+										</li>
+									`);
+								}
+								$$('.hapus-produk-sothys').on('click', function () {
+									var id = $$(this).data('id');
+									app.dialog.confirm("Apakah Anda yakin untuk menghapus produk ini?",function(){
+										loadingdata();
+										app.request({
+											method:"POST",
+											url:conn_database+"sothys/product/delete_product.php",
+											data:{idproduct:id},
+											success:function(data){
+												var obj = JSON.parse(data);
+												if(obj['status'] == true) {
+													var x = obj['data'];
+													app.dialog.alert(x,'Notifikasi',function(){
+														mainView.router.refreshPage();
+													});
+													determinateLoading = false;
+													app.dialog.close();
+												}
+												else {
+													determinateLoading = false;
+													app.dialog.close();
+													app.dialog.alert(obj['message']);
+												}
+											},
+											error:function(data){
+												determinateLoading = false;
+												app.dialog.close();
+												app.dialog.alert(error_connection);
+											}
+										  });
+									});
+								});
+
+							}
+							else 
+							{
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+			},	
+		},
+	},
+	// Tambah Produk Sothys
+	{
+		path: '/tambah_produk_sothys/',
+		url: 'pages/sothys/tambah_produk.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				$$('#btn-submit-tambah-produk-sothys').on('click', function(e) {
+					var nama_tambah_produk_sothys = $$('#nama_tambah_produk_sothys').val();
+					var harga_tambah_produk_sothys = $$('#harga_tambah_produk_sothys').val();
+					loadingdata();
+					app.request({
+						method:"POST",
+						url:conn_database+"sothys/product/insert_product.php",
+						data:{
+							name_product:nama_tambah_produk_sothys,
+							price_product:harga_tambah_produk_sothys,
+						},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								app.dialog.alert(x,'Notifikasi',function(){
+									app.views.main.router.back({
+										url: /home/,
+										force: true,
+										ignoreCache: true
+									});
+								});
+								determinateLoading = false;
+								app.dialog.close();
+							}
+							else {
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+			},	
+		},
+	},
+	// Ubah Produk Sothys
+	{
+		path: '/ubah_produk_sothys/:id',
+		url: 'pages/sothys/ubah_produk.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				var x = page.router.currentRoute.params.id;
+				loadingdata();
+				app.request({
+					method:"POST",
+					url:conn_database+"sothys/product/show_product.php",
+					data:{idproduct:x},
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#nama_ubah_produk_sothys').val(x[0]['name_product']);
+							$$('#harga_ubah_produk_sothys').val(x[0]['price_product']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+				$$('#btn-submit-ubah-produk-sothys').on('click', function(e) {
+					var nama_ubah_produk_sothys = $$('#nama_ubah_produk_sothys').val();
+					var harga_ubah_produk_sothys = $$('#harga_ubah_produk_sothys').val();
+					loadingdata();
+					app.request({
+						method:"POST",
+						url:conn_database+"/sothys/product/update_product.php",
+						data:{
+							idproduct:x,
+							name_product:nama_ubah_produk_sothys,
+							price_product:harga_ubah_produk_sothys,
+						},
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								app.dialog.alert(x,'Notifikasi',function(){
+									app.views.main.router.back({
+										url: /home/,
+										force: true,
+										ignoreCache: true
+									});
+								});
+								determinateLoading = false;
+								app.dialog.close();
+							}
+							else {
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+			},	
+		},
+	},
+	// Transaksi Paket Member Salon
+	{
+		path: '/transaksi_member_produk_sothys/:id',
+		url: 'pages/sothys/transaksi_produk_sothys.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				var y = page.router.currentRoute.params.id;
+				loadingdata();
+				app.request({
+					method:"POST",
+					url:conn_database+"sothys/product/select_product.php",
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#list_produk_sothys').html('');
+							for(var i = 0; i<x.length; i++)
+							{
+								$$('#produk_transaksi_produk_member_sothys').append(`
+									<option value="`+x[i]['idproduct']+`">`+x[i]['name_product']+`</option>
+								`);
+							}
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+				var tmp=0;
+				$$('#btn-tambah-produk-transaksi-produk-member-sothys').on('click', function(e) {
+					tmp++;
+					$$('#daftar_produk_sothys_transaksi').append(`
+						<li class="item-content item-input">
+							<div class="item-media">
+							<i class="icon demo-list-icon"></i>
+							</div>
+							<div class="item-inner">
+							<div class="item-title item-label">Paket</div>
+							<div class="item-input-wrap input-dropdown-wrap">
+								<select placeholder="Please choose..." id="produk_transaksi_produk_member_sothys`+tmp+`">
+								
+								</select>
+							</div>
+							<input type="number" id="count_produk_transaksi_produk_member_sothys`+tmp+`"  placeholder="Jumlah">
+							</div>
+						</li>
+					`);
+					loadingdata();
+					app.request({
+						method:"POST",
+						url:conn_database+"sothys/product/select_product.php",
+						success:function(data){
+							var obj = JSON.parse(data);
+							if(obj['status'] == true) {
+								var x = obj['data'];
+								$$('#list_produk_sothys').html('');
+								for(var i = 0; i<x.length; i++)
+								{
+									$$('#produk_transaksi_produk_member_sothys'+tmp).append(`
+										<option value="`+x[i]['idproduct']+`">`+x[i]['name_product']+`</option>
+									`);
+								}
+								determinateLoading = false;
+								app.dialog.close();
+							}
+							else 
+							{
+								app.dialog.alert(obj['message']);
+								determinateLoading = false;
+								app.dialog.close();
+							}
+						},
+						error:function(data){
+							determinateLoading = false;
+							app.dialog.close();
+							app.dialog.alert(error_connection);
+						}
+					});
+				});
+				$$('#btn-submit-transaksi-produk-member-sothys').on('click', function(e) {
+					app.dialog.confirm("Apakah Anda yakin untuk menggunakan paket ini?",function(){
+						var paket_transaksi_paket_member_salon = $$('#paket_transaksi_paket_member_salon').val();
+						loadingdata();
+						app.request({
+							method:"POST",
+							url:conn_database+"salon/log_salon/insert_log_salon.php",
+							data:{
+								iduser:y,
+								idservice:paket_transaksi_paket_member_salon,
+							},
+							success:function(data){
+								var obj = JSON.parse(data);
+								if(obj['status'] == true) {
+									var x = obj['data'];
+									app.dialog.alert(x,'Notifikasi',function(){
+										app.views.main.router.back({
+											url: /home/,
+											force: true,
+											ignoreCache: true
+										});
+									});
+									determinateLoading = false;
+									app.dialog.close();
+								}
+								else {
+									app.dialog.alert(obj['message']);
+									determinateLoading = false;
+									app.dialog.close();
+								}
+							},
+							error:function(data){
+								determinateLoading = false;
+								app.dialog.close();
+								app.dialog.alert(error_connection);
+							}
+						});
 					});
 				});
 			},	
