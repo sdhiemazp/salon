@@ -1773,7 +1773,7 @@ routes: [
 			},	
 		},
 	},
-	// Transaksi Paket Member Salon
+	// Transaksi Paket Member Sothys
 	{
 		path: '/transaksi_member_produk_sothys/:id',
 		url: 'pages/sothys/transaksi_produk_sothys.html',
@@ -1782,37 +1782,6 @@ routes: [
 			pageInit: function (e, page) 
 			{
 				var y = page.router.currentRoute.params.id;
-				loadingdata();
-				app.request({
-					method:"POST",
-					url:conn_database+"sothys/product/select_product.php",
-					success:function(data){
-						var obj = JSON.parse(data);
-						if(obj['status'] == true) {
-							var x = obj['data'];
-							$$('#list_produk_sothys').html('');
-							for(var i = 0; i<x.length; i++)
-							{
-								$$('#produk_transaksi_produk_member_sothys').append(`
-									<option value="`+x[i]['idproduct']+`">`+x[i]['name_product']+`</option>
-								`);
-							}
-							determinateLoading = false;
-							app.dialog.close();
-						}
-						else 
-						{
-							app.dialog.alert(obj['message']);
-							determinateLoading = false;
-							app.dialog.close();
-						}
-					},
-					error:function(data){
-						determinateLoading = false;
-						app.dialog.close();
-						app.dialog.alert(error_connection);
-					}
-				});
 				var tmp=0;
 				$$('#btn-tambah-produk-transaksi-produk-member-sothys').on('click', function(e) {
 					tmp++;
@@ -1865,15 +1834,33 @@ routes: [
 					});
 				});
 				$$('#btn-submit-transaksi-produk-member-sothys').on('click', function(e) {
-					app.dialog.confirm("Apakah Anda yakin untuk menggunakan paket ini?",function(){
-						var paket_transaksi_paket_member_salon = $$('#paket_transaksi_paket_member_salon').val();
+					app.dialog.confirm("Apakah Anda sudah yakin dengan transaksi ini?",function(){
+						var produk_transaksi_produk_member_sothys = $$('#produk_transaksi_produk_member_sothys').val();
+						var count_produk_transaksi_produk_member_sothys = $$('#count_produk_transaksi_produk_member_sothys').val();
+						var arrtmp = [];
+						var arrtmpc = [];
+						for(var i =1;i<=tmp;i++)
+						{
+							var val=$$('#produk_transaksi_produk_member_sothys'+i).val();
+							if(!arrtmp.includes(val) && !(val == 0 || val == '' || val == null || val == undefined))
+							{
+								arrtmp.push($$('#mproduk_transaksi_produk_member_sothys'+i).val());
+							}
+							var valc=$$('#produk_transaksi_produk_member_sothys'+i).val();
+							if(!arrtmpc.includes(valc) && !(valc == 0 || valc == '' || valc == null || valc == undefined))
+							{
+								arrtmpc.push($$('#mproduk_transaksi_produk_member_sothys'+i).val());
+							}
+							
+						}
 						loadingdata();
 						app.request({
 							method:"POST",
 							url:conn_database+"salon/log_salon/insert_log_salon.php",
 							data:{
 								iduser:y,
-								idservice:paket_transaksi_paket_member_salon,
+								idproduct:arrtmp,
+								count_log:arrtmpc,
 							},
 							success:function(data){
 								var obj = JSON.parse(data);
