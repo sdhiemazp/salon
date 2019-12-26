@@ -365,6 +365,15 @@ routes: [
 		{
 			pageInit: function (e, page) 
 			{
+				var $ptrContent = $$('.ptr-content');
+				$ptrContent.on('ptr:refresh', function (e) {
+					// Emulate 2s loading
+					setTimeout(function () {
+						mainView.router.refreshPage();
+						// When loading done, we need to reset it
+						app.ptr.done(); // or e.detail();
+					}, 2000);
+				});
 				var x = page.router.currentRoute.params.id;
 				loadingdata();
 				app.request({
@@ -417,7 +426,7 @@ routes: [
 										<div class="timeline-item-date warna-text-menu">`+x['date'][i]['date_log_salon']+`</div>
 										<div class="timeline-item-divider"></div>
 										<div class="timeline-item-content">
-											<div class="timeline-item-inner mc-bg">
+											<div class="timeline-item-inner bckgrnd-riwayat">
 									`;
 									var temp = '';
 									for(var j = 0; j<x['date_detail'].length; j++)
@@ -425,8 +434,8 @@ routes: [
 										if(x['date_detail'][j]['date_log_salon'] == x['date'][i]['date_log_salon'])
 										{
 											temp += `
-												<div class="timeline-item-time mc-time">`+x['date_detail'][j]['time_log_salon']+`</div>
-												<div class="timeline-item-title mc-title">`+x['date_detail'][j]['name_service']+`</div>
+												<div class="timeline-item-time">`+x['date_detail'][j]['time_log_salon']+`</div>
+												<div class="timeline-item-title">`+x['date_detail'][j]['name_service']+`</div>
 											`;
 										}
 									}
@@ -1046,11 +1055,7 @@ routes: [
 		{
 			pageInit: function (e, page) 
 			{
-				$$('#printcoy').on('click', function(e) {
-					app.dialog.alert('oiiii');
-					cordova.plugins.printer.print('<b>Hello Cordova!</b>');
-					
-				});
+		
 			},	
 		},
 	},
@@ -1378,6 +1383,15 @@ routes: [
 		{
 			pageInit: function (e, page) 
 			{
+				var $ptrContent = $$('.ptr-content');
+				$ptrContent.on('ptr:refresh', function (e) {
+					// Emulate 2s loading
+					setTimeout(function () {
+						mainView.router.refreshPage();
+						// When loading done, we need to reset it
+						app.ptr.done(); // or e.detail();
+					}, 2000);
+				});
 				var x = page.router.currentRoute.params.id;
 				loadingdata();
 				app.request({
@@ -1421,10 +1435,10 @@ routes: [
 								for(var i = 0; i<x['date'].length; i++)
 								{
 									y +=`<div class="timeline-item">
-										<div class="timeline-item-date warna-text-menu">`+x['date'][i]['date_log_sothys']+`</div>
+										<div class="timeline-item-date">`+x['date'][i]['date_log_sothys']+`</div>
 										<div class="timeline-item-divider"></div>
 										<div class="timeline-item-content">
-											<div class="timeline-item-inner mc-bg">
+											<div class="timeline-item-inner bckgrnd-riwayat">
 									`;
 									var temp = '';
 									for(var j = 0; j<x['date_detail'].length; j++)
@@ -1432,8 +1446,8 @@ routes: [
 										if(x['date_detail'][j]['date_log_sothys'] == x['date'][i]['date_log_sothys'])
 										{
 											temp += `
-												<div class="timeline-item-time mc-time">`+x['date_detail'][j]['time_log_sothys']+`</div>
-												<div class="timeline-item-title mc-title">`+x['date_detail'][j]['name_service']+`</div>
+												<div class="timeline-item-time">`+x['date_detail'][j]['time_log_sothys']+`</div>
+												<div class="timeline-item-title">`+x['date_detail'][j]['name_product']+`</div>
 											`;
 										}
 									}
@@ -1818,10 +1832,14 @@ routes: [
 				});
 
 				var total = 0;
+				var arrtmp = [];
+				var arrtmpc = [];
+				var arrtmpp = [];
 				$$('#btn-tambah-produk-transaksi-produk-member-sothys').on('click', function(e) {
 					var idproduct = $$('#produk_transaksi_produk_member_sothys').val();
 					var count_product = $$('#count_produk_transaksi_produk_member_sothys').val();
-
+					arrtmp.push($$('#produk_transaksi_produk_member_sothys').val());
+					arrtmpc.push($$('#count_produk_transaksi_produk_member_sothys').val());
 					if(count_product == "" || count_product < 1) {
 						app.dialog.alert('Minimum jumlah transaksi adalah 1 produk.')
 					} else {
@@ -1853,8 +1871,9 @@ routes: [
 									`);
 									determinateLoading = false;
 									app.dialog.close();
-
+									arrtmpp.push(x[0]['price_product']);
 									total += parseInt(count_product) * parseInt(x[0]['price_product']);
+									$$('#total-transaksi-produk-member-sothys').html(total);
 								}
 								else 
 								{
@@ -1870,67 +1889,52 @@ routes: [
 							}
 						});
 					}
-
 					$$('#count_produk_transaksi_produk_member_sothys').val("1");
 				});
 
-				// $$('#btn-submit-transaksi-produk-member-sothys').on('click', function(e) {
-				// 	app.dialog.confirm("Apakah Anda sudah yakin dengan transaksi ini?",function(){
-				// 		var produk_transaksi_produk_member_sothys = $$('#produk_transaksi_produk_member_sothys').val();
-				// 		var count_produk_transaksi_produk_member_sothys = $$('#count_produk_transaksi_produk_member_sothys').val();
-				// 		var arrtmp = [];
-				// 		var arrtmpc = [];
-				// 		for(var i =1;i<=tmp;i++)
-				// 		{
-				// 			var val=$$('#produk_transaksi_produk_member_sothys'+i).val();
-				// 			if(!arrtmp.includes(val) && !(val == 0 || val == '' || val == null || val == undefined))
-				// 			{
-				// 				arrtmp.push($$('#mproduk_transaksi_produk_member_sothys'+i).val());
-				// 			}
-				// 			var valc=$$('#produk_transaksi_produk_member_sothys'+i).val();
-				// 			if(!arrtmpc.includes(valc) && !(valc == 0 || valc == '' || valc == null || valc == undefined))
-				// 			{
-				// 				arrtmpc.push($$('#mproduk_transaksi_produk_member_sothys'+i).val());
-				// 			}
-							
-				// 		}
-				// 		loadingdata();
-				// 		app.request({
-				// 			method:"POST",
-				// 			url:conn_database+"salon/log_salon/insert_log_salon.php",
-				// 			data:{
-				// 				iduser:y,
-				// 				idproduct:arrtmp,
-				// 				count_log:arrtmpc,
-				// 			},
-				// 			success:function(data){
-				// 				var obj = JSON.parse(data);
-				// 				if(obj['status'] == true) {
-				// 					var x = obj['data'];
-				// 					app.dialog.alert(x,'Notifikasi',function(){
-				// 						app.views.main.router.back({
-				// 							url: /home/,
-				// 							force: true,
-				// 							ignoreCache: true
-				// 						});
-				// 					});
-				// 					determinateLoading = false;
-				// 					app.dialog.close();
-				// 				}
-				// 				else {
-				// 					app.dialog.alert(obj['message']);
-				// 					determinateLoading = false;
-				// 					app.dialog.close();
-				// 				}
-				// 			},
-				// 			error:function(data){
-				// 				determinateLoading = false;
-				// 				app.dialog.close();
-				// 				app.dialog.alert(error_connection);
-				// 			}
-				// 		});
-				// 	});
-				// });
+				$$('#btn-submit-transaksi-produk-member-sothys').on('click', function(e) {
+					app.dialog.confirm("Apakah Anda sudah yakin dengan transaksi ini?",function(){
+						console.log('arrtmp' + arrtmp);
+						console.log('arrtmpc' + arrtmpc);
+						console.log('arrtmpp' + arrtmpp);
+						loadingdata();
+						app.request({
+							method:"POST",
+							url:conn_database+"sothys/log_sothys/insert_log_sothys.php",
+							data:{
+								iduser:y,
+								idproduct:arrtmp,
+								count_log:arrtmpc,
+								price_log:arrtmpp,
+							},
+							success:function(data){
+								var obj = JSON.parse(data);
+								if(obj['status'] == true) {
+									var x = obj['data'];
+									app.dialog.alert(x,'Notifikasi',function(){
+										app.views.main.router.back({
+											url: /home/,
+											force: true,
+											ignoreCache: true
+										});
+									});
+									determinateLoading = false;
+									app.dialog.close();
+								}
+								else {
+									app.dialog.alert(obj['message']);
+									determinateLoading = false;
+									app.dialog.close();
+								}
+							},
+							error:function(data){
+								determinateLoading = false;
+								app.dialog.close();
+								app.dialog.alert(error_connection);
+							}
+						});
+					});
+				});
 			},	
 		},
 	},
