@@ -1448,6 +1448,7 @@ routes: [
 											temp += `
 												<div class="timeline-item-time">`+x['date_detail'][j]['time_log_sothys']+`</div>
 												<div class="timeline-item-title">`+x['date_detail'][j]['name_product']+`</div>
+												<div class="timeline-item-subtitle">`+x['date_detail'][j]['count_log_sothys_detail']+`</div>
 											`;
 										}
 									}
@@ -1831,17 +1832,18 @@ routes: [
 					}
 				});
 
-				var total = 0;
 				var arrtmp = [];
 				var arrtmpc = [];
 				var arrtmpp = [];
+				var tmpjmlh = 0;
 				$$('#btn-tambah-produk-transaksi-produk-member-sothys').on('click', function(e) {
+					tmpjmlh++;
 					var idproduct = $$('#produk_transaksi_produk_member_sothys').val();
 					var count_product = $$('#count_produk_transaksi_produk_member_sothys').val();
-					arrtmp.push($$('#produk_transaksi_produk_member_sothys').val());
-					arrtmpc.push($$('#count_produk_transaksi_produk_member_sothys').val());
+					// arrtmp.push($$('#produk_transaksi_produk_member_sothys').val());
+					// arrtmpc.push($$('#count_produk_transaksi_produk_member_sothys').val());
 					if(count_product == "" || count_product < 1) {
-						app.dialog.alert('Minimum jumlah transaksi adalah 1 produk.')
+						app.dialog.alert('Minimum jumlah transaksi adalah 1 produk.');
 					} else {
 						app.request({
 							method:"POST",
@@ -1851,29 +1853,26 @@ routes: [
 								if(obj['status'] == true) {
 									var x = obj['data'];
 									$$('#list_produk_transaksi_produk_member_sothys').append(`
-										<li class="swipeout">
-											<div class="swipeout-content">
-											<a href="#" class="item-link item-content">
-												<div class="item-inner">
-												<div class="item-title-row">
-													<div class="item-title">`+x[0]['name_product']+`</div>
-													<div class="item-after"></div>
-												</div>
-												<div class="item-subtitle">`+count_product+` x `+formatRupiah(x[0]['price_product'])+`</div>
-												<div class="item-subtitle"></div>
-												</div>
-											</a>
+										<li class="item-content item-input">
+											<div class="item-media">
+											<i class="icon demo-list-icon"></i>
 											</div>
-											<div class="swipeout-actions-right">
-												<a href="#" data-id=" `+x[0]['idproduct']+` " class="color-red hapus-transaksi-produk-sothys">Hapus</a>
+											<div class="item-inner">
+											<div class="item-title item-label">Paket</div>
+											<div class="item-input-wrap input-dropdown-wrap">
+												<select placeholder="Please choose..." id="produk_transaksi_produk_member_sothys_detail`+tmpjmlh+`">
+													<option value="`+x[0]['idproduct']+`">`+x[0]['name_product']+`</option>
+												</select>
+											</div>
+												<input type="number" id="count_produk_transaksi_produk_member_sothys_detail`+tmpjmlh+`" value="`+count_product+`" placeholder="Jumlah"><a> x <input type="hidden" id="price_produk_transaksi_produk_member_sothys_detail`+tmpjmlh+`" value="`+x[0]['price_product']+`" placeholder="Jumlah">`+formatRupiah(x[0]['price_product'])+`</a>
 											</div>
 										</li>
 									`);
 									determinateLoading = false;
 									app.dialog.close();
-									arrtmpp.push(x[0]['price_product']);
-									total += parseInt(count_product) * parseInt(x[0]['price_product']);
-									$$('#total-transaksi-produk-member-sothys').html(total);
+									// arrtmpp.push(x[0]['price_product']);
+									// total += parseInt(count_product) * parseInt(x[0]['price_product']);	
+									// $$('#total-transaksi-produk-member-sothys').html();
 								}
 								else 
 								{
@@ -1893,7 +1892,21 @@ routes: [
 				});
 
 				$$('#btn-submit-transaksi-produk-member-sothys').on('click', function(e) {
-					app.dialog.confirm("Apakah Anda sudah yakin dengan transaksi ini?",function(){
+					var total = 0;
+					for(var i = 1;i<=tmpjmlh;i++)
+					{
+						var val_id=$$('#produk_transaksi_produk_member_sothys_detail'+i).val();
+						var val_count=$$('#count_produk_transaksi_produk_member_sothys_detail'+i).val();
+						var val_price=$$('#price_produk_transaksi_produk_member_sothys_detail'+i).val();
+						if(!(val_count == 0 || val_count == '' || val_count == null || val_count == undefined))
+						{
+							arrtmp.push($$('#produk_transaksi_produk_member_sothys_detail'+i).val());
+							arrtmpc.push($$('#count_produk_transaksi_produk_member_sothys_detail'+i).val());
+							arrtmpp.push($$('#price_produk_transaksi_produk_member_sothys_detail'+i).val());
+							total += parseInt($$('#count_produk_transaksi_produk_member_sothys_detail'+i).val()) * parseInt($$('#price_produk_transaksi_produk_member_sothys_detail'+i).val());
+						}
+					}
+					app.dialog.confirm("Total transaksi ini adalah "+formatRupiah(total.toString())+" ?",function(){
 						console.log('arrtmp' + arrtmp);
 						console.log('arrtmpc' + arrtmpc);
 						console.log('arrtmpp' + arrtmpp);
