@@ -27,7 +27,10 @@ routes: [
 		{
 			pageInit: function (e, page) 
 			{
-				
+				// document.addEventListener('deviceready', function() {
+				// 	var url = 'https://salon.skdevtechnology.com/api/sothys/log_sothys/checkout_log_sothys.php'
+				// 	cordova.InAppBrowser.open(url, '_system', 'location=no');
+				// }, false);
 			},	
 		},
 	},
@@ -1907,9 +1910,6 @@ routes: [
 						}
 					}
 					app.dialog.confirm("Total transaksi ini adalah "+formatRupiah(total.toString())+" ?",function(){
-						console.log('arrtmp' + arrtmp);
-						console.log('arrtmpc' + arrtmpc);
-						console.log('arrtmpp' + arrtmpp);
 						loadingdata();
 						app.request({
 							method:"POST",
@@ -1925,6 +1925,8 @@ routes: [
 								if(obj['status'] == true) {
 									var x = obj['data'];
 									app.dialog.alert(x,'Notifikasi',function(){
+										var url = 'https://salon.skdevtechnology.com/api/sothys/log_sothys/checkout_log_sothys.php'
+										cordova.InAppBrowser.open(url, '_system', 'location=no');
 										app.views.main.router.back({
 											url: /home/,
 											force: true,
