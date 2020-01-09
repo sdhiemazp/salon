@@ -1818,6 +1818,19 @@ routes: [
 									<option value="`+x[i]['idproduct']+`">`+x[i]['name_product']+`</option>
 								`);
 							}
+							var autocompleteDropdownAll = app.autocomplete.create({
+								inputEl: '#produk_transaksi_produk_member_sothys',
+								openIn: 'dropdown',
+								source: function (query, render) {
+								  var results = [];
+								  // Find matched items
+								  for (var i = 0; i < x.length; i++) {
+									if (x[i]['name_product'].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(x[i]['idproduct']+'-'+x[i]['name_product']);
+								  }
+								  // Render items by passing array with result items
+								  render(results);
+								}
+							  });
 							determinateLoading = false;
 							app.dialog.close();
 						}
@@ -1841,8 +1854,10 @@ routes: [
 				var tmpjmlh = 0;
 				$$('#btn-tambah-produk-transaksi-produk-member-sothys').on('click', function(e) {
 					tmpjmlh++;
+					
 					var idproduct = $$('#produk_transaksi_produk_member_sothys').val();
 					var count_product = $$('#count_produk_transaksi_produk_member_sothys').val();
+					console.log(idproduct);
 					// arrtmp.push($$('#produk_transaksi_produk_member_sothys').val());
 					// arrtmpc.push($$('#count_produk_transaksi_produk_member_sothys').val());
 					if(count_product == "" || count_product < 1) {
@@ -1850,7 +1865,7 @@ routes: [
 					} else {
 						app.request({
 							method:"POST",
-							url:conn_database+"sothys/product/show_product.php", data: {idproduct: idproduct},
+							url:conn_database+"sothys/product/show_product_split.php", data: {idproduct: idproduct},
 							success:function(data){
 								var obj = JSON.parse(data);
 								if(obj['status'] == true) {

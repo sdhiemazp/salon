@@ -1,4 +1,12 @@
 :root {
+
+  --f7-autocomplete-dropdown-placeholder-color: #a9a9a9;
+  --f7-autocomplete-dropdown-preloader-size: 20px;
+  /*
+  --f7-autocomplete-dropdown-selected-bg-color: rgba(var(--f7-theme-color-rgb), 0.2);
+  */
+  --f7-autocomplete-dropdown-bg-color: #fff;
+  
   /*
   --f7-navbar-bg-color: var(--f7-bars-bg-color);
   --f7-navbar-bg-color-rgb: var(--f7-bars-bg-color-rgb);
