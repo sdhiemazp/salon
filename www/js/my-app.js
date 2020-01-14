@@ -1863,9 +1863,10 @@ routes: [
 					if(count_product == "" || count_product < 1) {
 						app.dialog.alert('Minimum jumlah transaksi adalah 1 produk.');
 					} else {
+						loadingdata();
 						app.request({
 							method:"POST",
-							url:conn_database+"sothys/product/show_product_split.php", data: {idproduct: idproduct},
+							url:conn_database+"sothys/product/show_product.php", data: {idproduct: idproduct},
 							success:function(data){
 								var obj = JSON.parse(data);
 								if(obj['status'] == true) {
@@ -1888,6 +1889,8 @@ routes: [
 									`);
 									determinateLoading = false;
 									app.dialog.close();
+									$$('#count_produk_transaksi_produk_member_sothys').val("1");
+									$$('#produk_transaksi_produk_member_sothys').val('');
 									// arrtmpp.push(x[0]['price_product']);
 									// total += parseInt(count_product) * parseInt(x[0]['price_product']);	
 									// $$('#total-transaksi-produk-member-sothys').html();
@@ -1906,7 +1909,6 @@ routes: [
 							}
 						});
 					}
-					$$('#count_produk_transaksi_produk_member_sothys').val("1");
 				});
 
 				$$('#btn-submit-transaksi-produk-member-sothys').on('click', function(e) {
