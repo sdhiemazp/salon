@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.skdevtech.membership" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="https://salon.skdevtechnology.com">
-    <name>Salon XXX</name>
+    <name>Marcel App</name>
     <description>
-        Aplikasi Member Salon xxx
+        Aplikasi Member Salon Marcel
     </description>
     <author email="skdevtechnology@gmail.com" href="http://phonegap.com">
         SK DEV TECHNOLOGY
