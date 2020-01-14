@@ -1877,7 +1877,7 @@ routes: [
 											<i class="icon demo-list-icon"></i>
 											</div>
 											<div class="item-inner">
-											<div class="item-title item-label">Paket</div>
+											<div class="item-title item-label">Produk</div>
 											<div class="item-input-wrap input-dropdown-wrap">
 												<select placeholder="Please choose..." id="produk_transaksi_produk_member_sothys_detail`+tmpjmlh+`">
 													<option value="`+x[0]['idproduct']+`">`+x[0]['name_product']+`</option>
