@@ -793,6 +793,19 @@ routes: [
 									<option value="`+x['service'][i]['idservice']+`">`+x['service'][i]['name_service']+`</option>
 								`);
 							}
+							var autocompleteDropdownAllaa = app.autocomplete.create({
+								inputEl: '#paket_tambah_paket_member_salon',
+								openIn: 'dropdown',
+								source: function (query, render) {
+								  var results = [];
+								  // Find matched items
+								  for (var i = 0; i < x['service'].length; i++) {
+									if (x['service'][i]['name_service'].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(x['service'][i]['idservice']+'-'+x['service'][i]['name_service']);
+								  }
+								  // Render items by passing array with result items
+								  render(results);
+								}
+							});
 							for(var i = 0; i<x['user'].length; i++)
 							{
 								$$('#member_tambah_paket_member_salon').append(`
@@ -1830,7 +1843,7 @@ routes: [
 								  // Render items by passing array with result items
 								  render(results);
 								}
-							  });
+							});
 							determinateLoading = false;
 							app.dialog.close();
 						}
