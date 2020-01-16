@@ -27,10 +27,7 @@ routes: [
 		{
 			pageInit: function (e, page) 
 			{
-				// document.addEventListener('deviceready', function() {
-				// 	var url = 'https://salon.skdevtechnology.com/api/sothys/log_sothys/checkout_log_sothys.php'
-				// 	cordova.InAppBrowser.open(url, '_system', 'location=no');
-				// }, false);
+
 			},	
 		},
 	},
@@ -2020,6 +2017,27 @@ function loadingdata() {
 		var progressBarEl;
 		if (inline) {
 			progressBarEl = app.dialog.progress();
+		} else {
+			progressBarEl = app.progressbar.show(0, app.theme === 'md' ? 'yellow' : 'blue');
+		}
+		function simulateLoading() {
+			setTimeout(function () {
+				simulateLoading();
+			}, Math.random() * 300 + 300);
+		}
+		simulateLoading();
+	}
+}
+
+function loadingdataperiode(keterangan) {
+	showDeterminate(true);
+	determinateLoading = false;
+	function showDeterminate(inline) 
+	{
+		determinateLoading = true;
+		var progressBarEl;
+		if (inline) {
+			progressBarEl = app.dialog.progress(keterangan);
 		} else {
 			progressBarEl = app.progressbar.show(0, app.theme === 'md' ? 'yellow' : 'blue');
 		}
