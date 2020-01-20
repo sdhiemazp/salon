@@ -31,6 +31,50 @@ routes: [
 			},	
 		},
 	},
+	// home backup
+	{
+		path: '/index_backup/',
+		url: 'pages/index_backup.html',
+		on: 
+		{
+			pageInit: function (e, page) 
+			{
+				loadingdata();
+				app.request({
+					method:"GET",
+					url:conn_database+"/sothys/select_periode.php",
+					success:function(data){
+						var obj = JSON.parse(data);
+						if(obj['status'] == true) {
+							var x = obj['data'];
+							$$('#list_periode_backup').html('');
+							for(var i = 0; i<x.length; i++)
+							{
+								$$('#list_periode_backup').append(`
+									<p>
+										<a href="https://salon.skdevtechnology.com/api/show_backup.php?tahun=` +x[i]['tahun']+ `"  target="_system" class="external button button-large button-raised button-fill tombol-menu-backup">` +x[i]['tahun']+ `</a>
+									</p>
+								`);
+							}
+							determinateLoading = false;
+							app.dialog.close();
+						}
+						else 
+						{
+							app.dialog.alert(obj['message']);
+							determinateLoading = false;
+							app.dialog.close();
+						}
+					},
+					error:function(data){
+						determinateLoading = false;
+						app.dialog.close();
+						app.dialog.alert(error_connection);
+					}
+				});
+			},	
+		},
+	},
 	// Salon
 	{
 		path: '/index_salon/',
