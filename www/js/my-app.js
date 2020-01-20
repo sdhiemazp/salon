@@ -4,10 +4,8 @@ var error_connection = "Jaringan tidak tersedia !!!";
 var app = new Framework7({
 root: '#app',
 name: 'Salon Membership',
-theme:'ios',
 id: 'com.skdevtech.membership',
 touch: { fastClicks: true,},
-view: { iosDynamicNavbar: false, },
 routes: [
 	{
 		path: '/index/',
@@ -526,8 +524,8 @@ routes: [
 						app.ptr.done(); // or e.detail();
 					}, 2000);
 				});
+				$$('#succes_list_paket_salon').hide();
 				$$('#list_paket_salon').html('');
-				loadingdata();
 				app.request({
 					method:"POST",
 					url:conn_database+"salon/service/select_service.php",
@@ -590,20 +588,20 @@ routes: [
 									  });
 								});
 							});
-							determinateLoading = false;
-							app.dialog.close();
+							$$('#loading_list_paket_salon').hide();
+							$$('#succes_list_paket_salon').show();
 						}
 						else 
 						{
+							$$('#loading_list_paket_salon').hide();
 							app.dialog.alert(obj['message']);
-							determinateLoading = false;
-							app.dialog.close();
+							$$('#succes_list_paket_salon').hide();
 						}
 					},
 					error:function(data){
-						determinateLoading = false;
-						app.dialog.close();
+						$$('#loading_list_paket_salon').hide();
 						app.dialog.alert(error_connection);
+						$$('#succes_list_paket_salon').hide();
 					}
 				});
 				$$('#txtsearch_list_paket_salon').on('keyup', function()
@@ -1553,8 +1551,8 @@ routes: [
 					}, 2000);
 				});
 
+				$$('#succes_list_produk_sothys').hide();
 				$$('#list_produk_sothys').html('');
-				loadingdata();
 				app.request({
 					method:"POST",
 					url:conn_database+"sothys/product/select_product.php",
@@ -1618,20 +1616,20 @@ routes: [
 									  });
 								});
 							});
-							determinateLoading = false;
-							app.dialog.close();
+							$$('#loading_list_produk_sothys').hide();
+							$$('#succes_list_produk_sothys').show();
 						}
 						else 
 						{
 							app.dialog.alert(obj['message']);
-							determinateLoading = false;
-							app.dialog.close();
+							$$('#loading_list_produk_sothys').hide();
+							$$('#succes_list_produk_sothys').hide();
 						}
 					},
 					error:function(data){
-						determinateLoading = false;
-						app.dialog.close();
+						$$('#loading_list_produk_sothys').hide();
 						app.dialog.alert(error_connection);
+						$$('#succes_list_produk_sothys').hide();
 					}
 				});
 
