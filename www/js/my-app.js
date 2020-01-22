@@ -851,6 +851,19 @@ routes: [
 									<option value="`+x['user'][i]['iduser']+`">`+x['user'][i]['phone_user']+` - `+x['user'][i]['name_user']+`</option>
 								`);
 							}
+							var autocompleteDropdownAllaa = app.autocomplete.create({
+								inputEl: '#member_tambah_paket_member_salon',
+								openIn: 'dropdown',
+								source: function (query, render) {
+								  var results = [];
+								  // Find matched items
+								  for (var i = 0; i < x['user'].length; i++) {
+									if (x['user'][i]['name_user'].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(x['user'][i]['iduser']+'-'+x['user'][i]['phone_user']+`( `+x['user'][i]['name_user']+` )`);
+								  }
+								  // Render items by passing array with result items
+								  render(results);
+								}
+							});
 							determinateLoading = false;
 							app.dialog.close();
 						}
